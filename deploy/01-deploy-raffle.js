@@ -6,19 +6,19 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = network.config.chainId;
-  let vrfCoordinatorV2Address, subscribtionId;
+  let vrfCoordinatorV2Address, vrfCoordinatorV2Mock, subscribtionId;
   const VRF_SUB_FUND_AMOUNT = 2;
 
   if (developmentChain.includes(network.name)) {
-    const vrfCoordinatorV2Mock = await ethers.getContract(
-      "VRFCoordinatorV2Mock"
-    );
+    vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock");
+
     vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address;
     const TransactionResponse = await vrfCoordinatorV2Mock.createSubscription();
     const TransactionReciept = await TransactionResponse.wait(1);
     subscribtionId = TransactionReciept.events[0].args.subId;
     //fund subsribtion
     //we usually  need the link token on a real network
+
     await vrfCoordinatorV2Mock.fundSubscription(
       subscribtionId,
       VRF_SUB_FUND_AMOUNT
@@ -33,6 +33,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
   const interval = networkConfig[chainId]["interval"];
 
   const raffle = await deploy("Raffle", {
+    contract: "Raffle",
     from: deployer,
     args: [
       vrfCoordinatorV2Address,
@@ -46,6 +47,10 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     waitConfirmations: network.config.blockConfirmations || 1,
   });
 
+  console.log("Raffle Deployed");
+
+  await vrfCoordinatorV2Mock.addConsumer(subscribtionId, raffle.address);
+
   if (
     !developmentChain.includes(network.name) &&
     process.env.ETHERSCAN_API_KEY
@@ -55,4 +60,4 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
   }
 };
 
-module.exports.tags = ["all"];
+module.exports.tags = ["all", "raffle"];

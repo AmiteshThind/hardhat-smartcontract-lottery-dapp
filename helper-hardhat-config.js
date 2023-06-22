@@ -22,8 +22,14 @@ const networkConfig = {
 };
 
 const developmentChain = ["hardhat", "localhost"];
+const frontEndContractsFile =
+  "/Users/amitesh.thind/Desktop/BlockchainProjects/hardhat-smartcontract-lottery-dapp/nextjs-smartcontract-lottery/constants/contractAddresses.json";
+const frontEndAbiFile =
+  "/Users/amitesh.thind/Desktop/BlockchainProjects/hardhat-smartcontract-lottery-dapp/nextjs-smartcontract-lottery/constants/abi.json";
 
 module.exports = {
   networkConfig,
   developmentChain,
+  frontEndContractsFile,
+  frontEndAbiFile,
 };

@@ -16,6 +16,9 @@ module.exports = {
   solidity: "0.8.18",
   defaultNetwork: "hardhat",
   networks: {
+    hardhat: {
+      chainId: 31337,
+    },
     sepolia: {
       url: SEPOLIA_RPC_URL,
       accounts: [PRIVATE_KEY],
@@ -27,7 +30,7 @@ module.exports = {
       url: "http://127.0.0.1:8545/",
       chainId: 31337,
       blockConfirmations: 1,
-      gasPrice: 3500000,
+      //gasPrice: 500000000,
     },
   },
   namedAccounts: {
